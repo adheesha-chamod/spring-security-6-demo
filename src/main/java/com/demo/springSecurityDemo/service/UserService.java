@@ -7,6 +7,8 @@ import com.demo.springSecurityDemo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -21,6 +23,10 @@ public class UserService {
                 .build();
 
         return userRepository.save(newUser);
+    }
+
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public UserDTO convertToUserDTO(User user) {
