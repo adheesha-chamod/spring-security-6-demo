@@ -5,6 +5,7 @@ import com.demo.springSecurityDemo.dto.UserDTO;
 import com.demo.springSecurityDemo.entity.User;
 import com.demo.springSecurityDemo.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,12 +15,13 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     public User addUser(AddUserDTO addUserDTO) {
         User newUser = User.builder()
                 .username(addUserDTO.getUsername())
-                .password(addUserDTO.getPassword())
+                .password(bCryptPasswordEncoder.encode(addUserDTO.getPassword()))
                 .build();
 
         return userRepository.save(newUser);
