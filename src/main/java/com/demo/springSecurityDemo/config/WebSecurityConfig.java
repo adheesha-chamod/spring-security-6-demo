@@ -2,6 +2,7 @@ package com.demo.springSecurityDemo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,9 +21,10 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(
-                        authorizeRequests -> authorizeRequests.anyRequest().authenticated()
+                        authorizeRequests -> authorizeRequests
+                                .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+                                .anyRequest().authenticated()
                 )
-//                .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
 
         return httpSecurity.build();
