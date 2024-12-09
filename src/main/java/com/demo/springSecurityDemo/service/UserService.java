@@ -5,6 +5,7 @@ import com.demo.springSecurityDemo.dto.LoginUserDTO;
 import com.demo.springSecurityDemo.dto.UserDTO;
 import com.demo.springSecurityDemo.entity.User;
 import com.demo.springSecurityDemo.repository.UserRepository;
+import com.demo.springSecurityDemo.security.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
 
     public User addUser(AddUserDTO addUserDTO) {
@@ -51,7 +53,7 @@ public class UserService {
         );
 
         if (authenticate.isAuthenticated()) {
-            return "jwt-token";
+            return jwtService.generateToken(loginUserDTO);
         }
         return null;
     }
