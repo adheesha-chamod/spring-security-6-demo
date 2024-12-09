@@ -1,4 +1,4 @@
-package com.demo.springSecurityDemo.service;
+package com.demo.springSecurityDemo.security;
 
 import com.demo.springSecurityDemo.entity.User;
 import com.demo.springSecurityDemo.repository.UserRepository;
