@@ -7,6 +7,9 @@ import com.demo.springSecurityDemo.entity.User;
 import com.demo.springSecurityDemo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationManager authenticationManager;
 
 
     public User addUser(AddUserDTO addUserDTO) {
@@ -42,11 +46,13 @@ public class UserService {
     }
 
     public String verifyUser(LoginUserDTO loginUserDTO) {
-        Optional<User> optionalUser = userRepository.findByUsername(loginUserDTO.getUsername());
-        if (optionalUser.isEmpty()) {
-            return null;
-        }
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword())
+        );
 
-        return "jwt-token-1234@abcd";
+        if (authenticate.isAuthenticated()) {
+            return "jwt-token";
+        }
+        return null;
     }
 }

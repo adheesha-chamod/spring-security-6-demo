@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,26 +38,9 @@ public class WebSecurityConfig {
         return httpSecurity.build();
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        UserDetails john = User.withUsername("john")
-//                .password("john@1234")
-//                .roles("USER")
-//                .passwordEncoder(password -> "{noop}" + password)   // {noop} is for plain text password
-//                .build();
-//
-//        UserDetails jane = User.withUsername("jane")
-//                .password("jane@1234")
-//                .roles("USER")
-//                .passwordEncoder(password -> "{noop}" + password)
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(john, jane);
-//    }
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();     // default strength -> 10 | max strength -> 31 | min strength -> 4
+        return new BCryptPasswordEncoder();     // one-way hashing || default strength -> 10 | max strength -> 31 | min strength -> 4
     }
 
     @Bean
@@ -64,5 +49,10 @@ public class WebSecurityConfig {
         provider.setUserDetailsService(customUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }
