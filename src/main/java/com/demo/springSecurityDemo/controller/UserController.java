@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -35,18 +36,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> loginUser(@RequestBody LoginUserDTO loginUserDTO) {
-        Optional<User> user = userService.getUserByUsername(loginUserDTO.getUsername());
-
-        if (user.isEmpty()) {
-            log.warn("[loginUser] User '{}' not found", loginUserDTO.getUsername());
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginUserDTO loginUserDTO) {
+        String result = userService.verifyUser(loginUserDTO);
+        if (result == null) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .build();
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(userService.convertToUserDTO(user.get()));
+                    .body(null);
         }
+
+        Map<String, String> token = Map.of("token", result);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(token);
     }
 }

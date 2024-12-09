@@ -1,10 +1,12 @@
 package com.demo.springSecurityDemo.service;
 
 import com.demo.springSecurityDemo.dto.AddUserDTO;
+import com.demo.springSecurityDemo.dto.LoginUserDTO;
 import com.demo.springSecurityDemo.dto.UserDTO;
 import com.demo.springSecurityDemo.entity.User;
 import com.demo.springSecurityDemo.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +39,14 @@ public class UserService {
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .build();
+    }
+
+    public String verifyUser(LoginUserDTO loginUserDTO) {
+        Optional<User> optionalUser = userRepository.findByUsername(loginUserDTO.getUsername());
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        return "jwt-token-1234@abcd";
     }
 }
